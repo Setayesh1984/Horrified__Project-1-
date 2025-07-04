@@ -6,14 +6,14 @@
 #include <iostream>
 #include <tuple>
 
-// Constructor
+
 MonsterCard::MonsterCard(const std::string &name, int itemsToRemove, int moves, int diceRolls,
                          const std::vector<std::tuple<std::string, std::string, std::string>> &villagersToSummon,
                          const std::vector<std::string> &monsterMovementOrder)
     : name(name), itemsToRemove(itemsToRemove), moves(moves), diceRolls(diceRolls),
       villagersToSummon(villagersToSummon), monsterMovementOrder(monsterMovementOrder) {}
 
-// Getters
+
 std::string MonsterCard::getName() const { return name; }
 int MonsterCard::getItemsToRemove() const { return itemsToRemove; }
 int MonsterCard::getMoves() const { return moves; }
@@ -76,7 +76,7 @@ void MonsterCard::applyEffects(Game *game)
             {
                 invisibleMan->moveTo(best);
                 best->clearItems();
-                std::cout << "🕵️ Invisible Man stole all items from " << best->getName() << "\n";
+                std::cout << "Invisible Man stole all items from " << best->getName() << "\n";
             }
         }
         else

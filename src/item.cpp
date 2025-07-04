@@ -1,6 +1,7 @@
 #include "item.hpp"
 #include "string"
 
+
 Item::Item(const std::string &name, ItemColor color, int power, const std::string &location)
     : name(name), color(color), power(power), locationName(location) {}
 

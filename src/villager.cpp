@@ -1,5 +1,6 @@
 #include "villager.hpp"
 
+
 Villager::Villager(const std::string &name, Location *start, Location *destination)
     : name(name), currentLocation(start), safeDestination(destination), isAlive(true), isSaved(false) {}
 

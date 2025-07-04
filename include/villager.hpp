@@ -8,6 +8,7 @@
 class Villager
 {
 private:
+
     std::string name;
     Location *currentLocation;
     Location *safeDestination;
@@ -17,6 +18,7 @@ private:
     bool isSaved;
 
 public:
+
     Villager(const std::string &name, Location *start, Location *destination);
     Location *getSafeLocation() const;
 

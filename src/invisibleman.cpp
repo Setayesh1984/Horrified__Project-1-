@@ -1,5 +1,4 @@
-// invisibleman.cpp
-// Implementation of the InvisibleMan monster and its special logic for the Horrified game.
+
 
 #include "invisibleman.hpp"
 #include "game.hpp"
@@ -9,13 +8,13 @@
 #include <map>
 #include <queue>
 #include <set>
-#include "game.hpp"     // Include Game to access game elements
-#include "villager.hpp" // Include Villager header for complete type definition
+#include "game.hpp"
+#include "villager.hpp"
 
-// Constructor: Initializes the Invisible Man and sets up required evidence
 InvisibleMan::InvisibleMan(Location *startLocation)
-    : Monster("Invisible Man", startLocation), evidencesFound(0) {
-    // Initialize the map with required evidence types (all set to not found)
+    : Monster("Invisible Man", startLocation), evidencesFound(0)
+{
+
     requiredEvidence["Footprint"] = false;
     requiredEvidence["Glove"] = false;
     requiredEvidence["Photo"] = false;
@@ -23,19 +22,15 @@ InvisibleMan::InvisibleMan(Location *startLocation)
     requiredEvidence["Bottle"] = false;
 }
 
-// Returns the number of evidence pieces found
 int InvisibleMan::getEvidenceCount() const
 {
     return evidencesFound;
 }
 
-// The special action for the Invisible Man during the Monster Phase
-// Handles attacking villagers or moving toward the nearest villager
 void InvisibleMan::performAction(Game *game)
 {
     std::cout << "Invisible Man's power (Stalk Unseen) is activated!" << std::endl;
 
-    // If there are villagers at the current location, attack one
     if (!location->getVillagers().empty())
     {
         Villager *targetVillager = location->getVillagers()[0];
@@ -46,56 +41,66 @@ void InvisibleMan::performAction(Game *game)
     }
     else
     {
-        // If no villagers, move up to two spaces toward the nearest villager
+
         std::cout << "No villagers to attack. Invisible Man moves towards nearest villager." << std::endl;
         for (int i = 0; i < 2; ++i)
         {
-            // Breadth-first search (BFS) to find the nearest location with a villager
-            Location* start = location;
-            std::queue<Location*> q;
-            std::map<Location*, Location*> parentMap;
-            std::set<Location*> visited;
+
+            Location *start = location;
+            std::queue<Location *> q;
+            std::map<Location *, Location *> parentMap;
+            std::set<Location *> visited;
             q.push(start);
             visited.insert(start);
             parentMap[start] = nullptr;
-            Location* targetFound = nullptr;
-            Location* firstStep = nullptr;
-            while (!q.empty()) {
-                Location* current = q.front();
+            Location *targetFound = nullptr;
+            Location *firstStep = nullptr;
+            while (!q.empty())
+            {
+                Location *current = q.front();
                 q.pop();
-                // If this location has a villager, we've found our target
-                if (!current->getVillagers().empty()) {
+
+                if (!current->getVillagers().empty())
+                {
                     targetFound = current;
                     break;
                 }
                 // Add neighbors to the BFS queue
-                for (auto neighbor : current->getNeighbors()) {
-                    if (visited.find(neighbor) == visited.end()) {
+                for (auto neighbor : current->getNeighbors())
+                {
+                    if (visited.find(neighbor) == visited.end())
+                    {
                         visited.insert(neighbor);
                         q.push(neighbor);
                         parentMap[neighbor] = current;
                     }
                 }
             }
-            // Backtrack to find the first step toward the target
-            if (targetFound) {
-                Location* currentPathLoc = targetFound;
-                while (parentMap[currentPathLoc] != start && parentMap[currentPathLoc] != nullptr) {
+
+            if (targetFound)
+            {
+                Location *currentPathLoc = targetFound;
+                while (parentMap[currentPathLoc] != start && parentMap[currentPathLoc] != nullptr)
+                {
                     currentPathLoc = parentMap[currentPathLoc];
                 }
                 firstStep = currentPathLoc;
             }
-            // Move to the next step if a target was found
-            if (firstStep) {
+
+            if (firstStep)
+            {
                 moveTo(firstStep);
                 std::cout << "Invisible Man moved to " << firstStep->getName() << std::endl;
-                // If we reach a villager, stop moving
-                if (!location->getVillagers().empty()) {
+
+                if (!location->getVillagers().empty())
+                {
                     std::cout << "Invisible Man reached a villager and stopped." << std::endl;
                     break;
                 }
-            } else {
-                // No villagers found anywhere on the board
+            }
+            else
+            {
+
                 std::cout << "Invisible Man could not find a villager to move towards." << std::endl;
                 break;
             }
@@ -103,11 +108,9 @@ void InvisibleMan::performAction(Game *game)
     }
 }
 
-// Checks if the Invisible Man can be defeated
-// Requires all evidence to be collected and at least 9 power in red items
 bool InvisibleMan::canBeDefeated(const std::vector<Item> &items) const
 {
-    // Check if all evidence has been collected
+
     bool allEvidenceFound = std::all_of(
         evidencesCollected.begin(),
         evidencesCollected.end(),
@@ -120,7 +123,6 @@ bool InvisibleMan::canBeDefeated(const std::vector<Item> &items) const
         return false;
     }
 
-    // Sum the power of all red items
     int totalPower = 0;
     for (const auto &item : items)
     {
@@ -140,7 +142,6 @@ bool InvisibleMan::canBeDefeated(const std::vector<Item> &items) const
     return false;
 }
 
-// Mark evidence as found for a given location
 void InvisibleMan::findEvidence(const std::string &location)
 {
     auto it = std::find(evidenceLocations.begin(), evidenceLocations.end(), location);
@@ -154,13 +155,11 @@ void InvisibleMan::findEvidence(const std::string &location)
     }
 }
 
-// Returns the name of this monster
 std::string InvisibleMan::getName() const
 {
     return "Invisible Man";
 }
 
-// Handles the Invisible Man attacking a hero (not used for Stalk Unseen)
 void InvisibleMan::attack(Game *game)
 {
     Location *loc = this->getLocation();
@@ -176,13 +175,15 @@ void InvisibleMan::attack(Game *game)
     target->takeDamage(1);
 }
 
-// Returns the required evidence map (for UI or logic)
-const std::map<std::string, bool>& InvisibleMan::getRequiredEvidence() const {
+const std::map<std::string, bool> &InvisibleMan::getRequiredEvidence() const
+{
     return requiredEvidence;
 }
 
-void InvisibleMan::markEvidenceFound(const std::string& name) {
-    if (requiredEvidence.find(name) != requiredEvidence.end()) {
+void InvisibleMan::markEvidenceFound(const std::string &name)
+{
+    if (requiredEvidence.find(name) != requiredEvidence.end())
+    {
         requiredEvidence[name] = true;
     }
 }

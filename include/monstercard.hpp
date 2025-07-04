@@ -14,6 +14,7 @@ class MonsterCard
 {
 
 private:
+
     std::string name;
     int itemsToRemove;
     int moves;
@@ -26,6 +27,7 @@ private:
     std::vector<std::string> monsterMovementOrder;
 
 public:
+
     MonsterCard(const std::string &name, int itemsToRemove, int moves, int diceRolls,
                 const std::vector<std::tuple<std::string, std::string, std::string>> &villagersToSummon,
                 const std::vector<std::string> &monsterMovementOrder);

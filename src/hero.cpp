@@ -81,19 +81,19 @@ void Hero::moveTo(Location *location)
     {
         if (villager->getLocation() == villager->getSafeLocation())
         {
-            // 3. دادن جایزه به قهرمان
+           
             addPerkCard(PerkCard("Villager Saved", "You rescued a villager!"));
 
-            // 4. علامت‌گذاری و حذف محلی
+           
             villager->markSaved();
             currentLocation->removeVillager(villager);
 
-            std::cout << villager->getName() << " نجات یافت!\n";
+            std::cout << villager->getName() << " be saved!!!\n";
         }
     }
 }
 
-// //az inja
+
 void Hero::useSpecialAction()
 {
     if (type != HeroType::Archaeologist)
@@ -182,13 +182,13 @@ void Hero::takeAllItems()
         this->addItem(item);
     }
 
-    currentLocation->clearItems(); // hazf item az makan
+    currentLocation->clearItems();
 }
 
 void Hero::removeItem()
 {
     if (!items.empty())
     {
-        items.pop_back(); // hazf yek item
+        items.pop_back();
     }
 }

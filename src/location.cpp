@@ -25,7 +25,7 @@ void Location::removeItem(const std::string &itemName)
 }
 
 const std::vector<Item> &Location::getItems() const
-{ // dastresi be list item ha
+{
     return items;
 }
 

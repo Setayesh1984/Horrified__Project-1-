@@ -14,11 +14,13 @@ enum class DiceType
 class Dice 
 {
 private:
+
     DiceType type;
     std::mt19937 randomGenerator;
     std::uniform_int_distribution<> distribution;
 
 public:
+
     Dice(DiceType type);
     std::string roll();
 };

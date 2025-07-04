@@ -3,8 +3,9 @@
 
 #include "game.hpp"
 
-int main() {
+int main()
+{
     Game game;
-    game.start();  // این صدا زده میشه و کل فلو اجرا میشه
+    game.start();
     return 0;
 }

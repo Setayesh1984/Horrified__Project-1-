@@ -7,6 +7,7 @@ class Dracula : public Monster
 {
     
 private:
+
     int coffinsRemaining;
     int remainingCoffins = 4;
    
@@ -14,6 +15,7 @@ private:
     std::vector<bool> coffinsDestroyed = {false, false, false, false};
 
 public:
+
     Dracula(Location* startLocation);
     void attack(Game* game);
 

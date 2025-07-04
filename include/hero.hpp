@@ -13,7 +13,7 @@ enum class HeroType
     Archaeologist
 };
 
-class Location; // forward declaration
+class Location;
 
 class Hero
 {
