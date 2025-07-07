@@ -749,17 +749,9 @@ void Game::heroPhase(Hero *hero)
         }
 
         case 9:
-        { // Quit
-            std::cout << "Are you sure you want to quit? (y/n): ";
-            char confirm;
-            std::cin >> confirm;
-            if (tolower(confirm) == 'y')
-            {
-                std::cout << "Thanks for playing!\n";
-                exit(0);
-            }
-            break;
-        }
+    handleQuit();
+    break;
+
 
         case 10:
         { // Special Action
@@ -1322,6 +1314,16 @@ void Game::showHelpMenu() {
 }
 
 
+void Game::handleQuit() {
+    std::cout << "Are you sure you want to quit? (y/n): ";
+    char confirm;
+    std::cin >> confirm;
+
+    if (tolower(confirm) == 'y') {
+        std::cout << "Thanks for playing!\n";
+        exit(0);
+    }
+}
 
 
 void Game::advanceTask(Hero *hero)
