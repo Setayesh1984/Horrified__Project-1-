@@ -729,115 +729,12 @@ void Game::heroPhase(Hero *hero)
     usePerkCard(hero);
     break;
 
-            std::cout << "\n=== INTERACTIVE HELP MENU ===\n";
-            std::cout << "Available actions: 1-10\n";
-            std::cout << "Enter a number (1-10) to see detailed explanation, or 0 to return to game:\n";
-            int helpChoice;
-            while (true)
-            {
-                std::cout << "Enter choice (0-10): ";
-                std::cin >> helpChoice;
-                if (helpChoice == 0)
-                    break;
-                break;
-            }
+            
 
-        case 6:
-        { // Help
-            std::cout << "\n=== INTERACTIVE HELP MENU ===\n";
-            std::cout << "Available actions: 1-10\n";
-            std::cout << "Enter a number (1-10) to see detailed explanation, or 0 to return to game:\n";
-
-            int helpChoice;
-            while (true)
-            {
-                std::cout << "Enter choice (0-10): ";
-                std::cin >> helpChoice;
-
-                if (helpChoice == 0)
-                    break;
-
-                switch (helpChoice)
-                {
-                case 1:
-                    std::cout << "\n=== MOVE ACTION ===\n";
-                    std::cout << "Cost: 1 action\n";
-                    std::cout << "Description: Move your hero to an adjacent location on the map.\n";
-                    std::cout << "Usage: You can move to any location connected by a line on the map.\n";
-                    std::cout << "Strategy: Use this to explore the map, reach items, or escape monsters.\n";
-                    break;
-                case 2:
-                    std::cout << "\n=== SHOW ITEMS ===\n";
-                    std::cout << "Cost: 0 actions (free)\n";
-                    std::cout << "Description: Display all items available in your current location.\n";
-                    std::cout << "Usage: Shows item names and their power levels.\n";
-                    std::cout << "Strategy: Always check what items are available before taking them.\n";
-                    break;
-                case 3:
-                    std::cout << "\n=== TAKE ITEM ===\n";
-                    std::cout << "Cost: 1 action\n";
-                    std::cout << "Description: Pick up one or more items from your current location.\n";
-                    std::cout << "Usage: Select items by number to add them to your inventory.\n";
-                    std::cout << "Strategy: Collect items needed for defeating monsters or advancing tasks.\n";
-                    break;
-                case 4:
-                    std::cout << "\n=== GUIDE VILLAGER ===\n";
-                    std::cout << "Cost: 1 action\n";
-                    std::cout << "Description: Guide a villager to safety or move them between locations.\n";
-                    std::cout << "Usage: Help villagers reach their destination to earn perk cards.\n";
-                    std::cout << "Strategy: Rescuing villagers provides valuable perk cards for later use.\n";
-                    break;
-                case 5:
-                    std::cout << "\n=== USE PERK CARD ===\n";
-                    std::cout << "Cost: 1 action\n";
-                    std::cout << "Description: Use one of your perk cards for special abilities.\n";
-                    std::cout << "Usage: Select a perk card from your inventory to activate it.\n";
-                    std::cout << "Strategy: Perk cards can provide powerful advantages - use them wisely.\n";
-                    break;
-                case 6:
-                    std::cout << "\n=== HELP ===\n";
-                    std::cout << "Cost: 0 actions (free)\n";
-                    std::cout << "Description: Show this interactive help menu.\n";
-                    std::cout << "Usage: Get detailed explanations of all game actions.\n";
-                    std::cout << "Strategy: Use this whenever you need to understand game mechanics.\n";
-                    break;
-                case 7:
-                    std::cout << "\n=== ADVANCE TASK ===\n";
-                    std::cout << "Cost: 1 action\n";
-                    std::cout << "Description: Progress in defeating monsters by destroying coffins or dropping evidence.\n";
-                    std::cout << "Usage: For Dracula - destroy coffins with appropriate items.\n";
-                    std::cout << "       For Invisible Man - drop evidence at the Precinct.\n";
-                    std::cout << "Strategy: This is essential for winning the game.\n";
-                    break;
-                case 8:
-                    std::cout << "\n=== DEFEAT MONSTER ===\n";
-                    std::cout << "Cost: 1 action\n";
-                    std::cout << "Description: Attempt to defeat a monster at your location.\n";
-                    std::cout << "Usage: Roll dice and meet conditions to defeat monsters.\n";
-                    std::cout << "Strategy: Only attempt when you have the right items and conditions.\n";
-                    break;
-                case 9:
-                    std::cout << "\n=== QUIT ===\n";
-                    std::cout << "Cost: 0 actions (free)\n";
-                    std::cout << "Description: Exit the game.\n";
-                    std::cout << "Usage: Confirm your choice to quit the game.\n";
-                    std::cout << "Strategy: Use this when you want to end your current game session.\n";
-                    break;
-                case 10:
-                    std::cout << "\n=== SPECIAL ACTION ===\n";
-                    std::cout << "Cost: 1 action\n";
-                    std::cout << "Description: Archaeologist special ability - take all items from current location.\n";
-                    std::cout << "Usage: Only available to Archaeologist character type.\n";
-                    std::cout << "Strategy: Very powerful for collecting multiple items efficiently.\n";
-                    break;
-                default:
-                    std::cout << "Invalid choice. Please enter 0-10.\n";
-                    break;
-                }
-                std::cout << "\n";
-            }
+            case 6:
+           { showHelpMenu();
             break;
-        }
+           }
 
         case 7:
         { // Advance Task
@@ -1327,6 +1224,101 @@ void Game::usePerkCard(Hero* hero) {
     std::cout << "Used " << perkCards[cardChoice - 1].getName() << "\n";
     perkCards[cardChoice - 1].activate(this, hero);
     hero->removePerkCard(cardChoice - 1);
+}
+
+
+void Game::showHelpMenu() {
+    std::cout << "\n=== INTERACTIVE HELP MENU ===\n";
+    std::cout << "Available actions: 1-10\n";
+    std::cout << "Enter a number (1-10) to see detailed explanation, or 0 to return to game:\n";
+
+    int helpChoice;
+    while (true) {
+        std::cout << "Enter choice (0-10): ";
+        std::cin >> helpChoice;
+
+        if (helpChoice == 0)
+            break;
+
+        switch (helpChoice) {
+            case 1:
+                std::cout << "\n=== MOVE ACTION ===\n";
+                std::cout << "Cost: 1 action\n";
+                std::cout << "Description: Move your hero to an adjacent location on the map.\n";
+                std::cout << "Usage: You can move to any location connected by a line on the map.\n";
+                std::cout << "Strategy: Use this to explore the map, reach items, or escape monsters.\n";
+                break;
+            case 2:
+                std::cout << "\n=== SHOW ITEMS ===\n";
+                std::cout << "Cost: 0 actions (free)\n";
+                std::cout << "Description: Display all items available in your current location.\n";
+                std::cout << "Usage: Shows item names and their power levels.\n";
+                std::cout << "Strategy: Always check what items are available before taking them.\n";
+                break;
+            case 3:
+                std::cout << "\n=== TAKE ITEM ===\n";
+                std::cout << "Cost: 1 action\n";
+                std::cout << "Description: Pick up one or more items from your current location.\n";
+                std::cout << "Usage: Select items by number to add them to your inventory.\n";
+                std::cout << "Strategy: Collect items needed for defeating monsters or advancing tasks.\n";
+                break;
+            case 4:
+                std::cout << "\n=== GUIDE VILLAGER ===\n";
+                std::cout << "Cost: 1 action\n";
+                std::cout << "Description: Guide a villager to safety or move them between locations.\n";
+                std::cout << "Usage: Help villagers reach their destination to earn perk cards.\n";
+                std::cout << "Strategy: Rescuing villagers provides valuable perk cards for later use.\n";
+                break;
+            case 5:
+                std::cout << "\n=== USE PERK CARD ===\n";
+                std::cout << "Cost: 1 action\n";
+                std::cout << "Description: Use one of your perk cards for special abilities.\n";
+                std::cout << "Usage: Select a perk card from your inventory to activate it.\n";
+                std::cout << "Strategy: Perk cards can provide powerful advantages - use them wisely.\n";
+                break;
+            case 6:
+                std::cout << "\n=== HELP ===\n";
+                std::cout << "Cost: 0 actions (free)\n";
+                std::cout << "Description: Show this interactive help menu.\n";
+                std::cout << "Usage: Get detailed explanations of all game mechanics.\n";
+                std::cout << "Strategy: Use this whenever you need to understand the game.\n";
+                break;
+            case 7:
+                std::cout << "\n=== ADVANCE TASK ===\n";
+                std::cout << "Cost: 1 action\n";
+                std::cout << "Description: Progress in defeating monsters by destroying coffins or dropping evidence.\n";
+                std::cout << "Usage: For Dracula - destroy coffins with appropriate items.\n";
+                std::cout << "       For Invisible Man - drop evidence at the Precinct.\n";
+                std::cout << "Strategy: This is essential for winning the game.\n";
+                break;
+            case 8:
+                std::cout << "\n=== DEFEAT MONSTER ===\n";
+                std::cout << "Cost: 1 action\n";
+                std::cout << "Description: Attempt to defeat a monster at your location.\n";
+                std::cout << "Usage: Roll dice and meet conditions to defeat monsters.\n";
+                std::cout << "Strategy: Only attempt when you have the right items and conditions.\n";
+                break;
+            case 9:
+                std::cout << "\n=== QUIT ===\n";
+                std::cout << "Cost: 0 actions (free)\n";
+                std::cout << "Description: Exit the game.\n";
+                std::cout << "Usage: Confirm your choice to quit the game.\n";
+                std::cout << "Strategy: Use this when you want to end your current game session.\n";
+                break;
+            case 10:
+                std::cout << "\n=== SPECIAL ACTION ===\n";
+                std::cout << "Cost: 1 action\n";
+                std::cout << "Description: Archaeologist special ability - take all items from current location.\n";
+                std::cout << "Usage: Only available to Archaeologist character type.\n";
+                std::cout << "Strategy: Very powerful for collecting multiple items efficiently.\n";
+                break;
+            default:
+                std::cout << "Invalid choice. Please enter 0-10.\n";
+                break;
+        }
+
+        std::cout << "\n"; // جداکننده بین توضیحات
+    }
 }
 
 
