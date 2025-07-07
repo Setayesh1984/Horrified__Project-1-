@@ -718,63 +718,8 @@ void Game::heroPhase(Hero *hero)
         }
 
         case 3:
-        { // Take item
-            const auto &locItems = hero->getLocation()->getItems();
-            if (locItems.empty())
-            {
-                std::cout << "No items available in this location." << std::endl;
-            }
-            else
-            {
-                std::cout << "\nAvailable items:" << std::endl;
-                for (size_t i = 0; i < locItems.size(); ++i)
-                {
-                    std::cout << i + 1 << ". " << locItems[i].getName()
-                              << " (Power: " << locItems[i].getPower() << ")" << std::endl;
-                }
-
-                std::cout << "Choose items to take (enter numbers separated by spaces, e.g., '1 3'): ";
-                std::string lineInput;
-                std::getline(std::cin >> std::ws, lineInput);
-
-                std::stringstream ss(lineInput);
-                int itemNum;
-                std::vector<int> chosenIndexes;
-
-                while (ss >> itemNum)
-                {
-                    if (itemNum >= 1 && itemNum >= 1 && itemNum <= static_cast<int>(locItems.size()))
-                    {
-                        chosenIndexes.push_back(itemNum - 1);
-                    }
-                    else
-                    {
-                        std::cout << "Invalid item number ignored: " << itemNum << std::endl;
-                    }
-                }
-
-                std::sort(chosenIndexes.begin(), chosenIndexes.end());
-                chosenIndexes.erase(std::unique(chosenIndexes.begin(), chosenIndexes.end()), chosenIndexes.end());
-
-                if (chosenIndexes.empty())
-                {
-                    std::cout << "No valid items selected." << std::endl;
-                }
-                else
-                {
-                    // Pick up items in reverse order to avoid invalidating iterators
-                    for (int i = chosenIndexes.size() - 1; i >= 0; --i)
-                    {
-                        int indexToRemove = chosenIndexes[i];
-                        Item picked = hero->getLocation()->removeItem(indexToRemove);
-                        hero->addItem(picked);
-                        std::cout << "Picked up " << picked.getName() << "\n";
-                        actions--;
-                    }
-                }
-            }
-            break;
-        }
+    pickUpItems(hero, actions);
+    break;
 
         case 4:
         {
@@ -1344,6 +1289,62 @@ void Game::handleMove(Hero *hero, int &actions)
         actions--;
     }
 }
+
+
+
+void Game::pickUpItems(Hero* hero, int& actions) {
+    const auto& locItems = hero->getLocation()->getItems();
+
+    if (locItems.empty()) {
+        std::cout << "No items available in this location." << std::endl;
+        return;
+    }
+
+    std::cout << "\nAvailable items:" << std::endl;
+    for (size_t i = 0; i < locItems.size(); ++i) {
+        std::cout << i + 1 << ". " << locItems[i].getName()
+                  << " (Power: " << locItems[i].getPower() << ")" << std::endl;
+    }
+
+    std::cout << "Choose items to take (enter numbers separated by spaces, e.g., '1 3'): ";
+    std::string lineInput;
+    std::getline(std::cin >> std::ws, lineInput);
+
+    std::stringstream ss(lineInput);
+    int itemNum;
+    std::vector<int> chosenIndexes;
+
+    while (ss >> itemNum) {
+        if (itemNum >= 1 && itemNum <= static_cast<int>(locItems.size())) {
+            chosenIndexes.push_back(itemNum - 1);
+        } else {
+            std::cout << "Invalid item number ignored: " << itemNum << std::endl;
+        }
+    }
+
+    std::sort(chosenIndexes.begin(), chosenIndexes.end());
+    chosenIndexes.erase(std::unique(chosenIndexes.begin(), chosenIndexes.end()), chosenIndexes.end());
+
+    if (chosenIndexes.empty()) {
+        std::cout << "No valid items selected." << std::endl;
+        return;
+    }
+
+    // Pick up items in reverse order to avoid invalidating iterators
+    for (int i = chosenIndexes.size() - 1; i >= 0; --i) {
+        int indexToRemove = chosenIndexes[i];
+        Item picked = hero->getLocation()->removeItem(indexToRemove);
+        hero->addItem(picked);
+        std::cout << "Picked up " << picked.getName() << "\n";
+        actions--;
+    }
+}
+
+
+
+
+
+
 
 void Game::advanceTask(Hero *hero)
 {
