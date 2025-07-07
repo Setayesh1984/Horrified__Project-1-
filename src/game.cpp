@@ -725,38 +725,9 @@ void Game::heroPhase(Hero *hero)
     guideVillager(hero, actions);
     break;
 
-        case 5:
-        { // Use a perk card
-            auto &perkCards = hero->getPerkCards();
-            if (perkCards.empty())
-            {
-                std::cout << "You have no perk cards!" << std::endl;
-            }
-            else
-            {
-                std::cout << "\nYour perk cards:" << std::endl;
-                for (size_t i = 0; i < perkCards.size(); ++i)
-                {
-                    std::cout << i + 1 << ". " << perkCards[i].getName()
-                              << " - " << perkCards[i].getDescription() << std::endl;
-                }
-
-                int cardChoice;
-                std::cout << "Choose card to use (1-" << perkCards.size() << "): ";
-                while (!(std::cin >> cardChoice) || cardChoice < 1 || cardChoice > static_cast<int>(perkCards.size()))
-                {
-                    std::cout << "Invalid card choice. Please try again: ";
-                    std::cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                }
-
-                perkCards[cardChoice - 1].activate(this, hero);
-
-                std::cout << "Used " << perkCards[cardChoice - 1].getName() << "\n";
-                hero->removePerkCard(cardChoice - 1);
-            }
-            break;
-        }
+    case 5:
+    usePerkCard(hero);
+    break;
 
             std::cout << "\n=== INTERACTIVE HELP MENU ===\n";
             std::cout << "Available actions: 1-10\n";
@@ -1325,6 +1296,37 @@ void Game::guideVillager(Hero* hero, int& actions) {
     if (!didSomething && localVillagers.empty()) {
         std::cout << "😕 No villagers available to guide.\n";
     }
+}
+
+
+void Game::usePerkCard(Hero* hero) {
+    auto& perkCards = hero->getPerkCards();
+
+    if (perkCards.empty()) {
+        std::cout << "You have no perk cards!" << std::endl;
+        return;
+    }
+
+    std::cout << "\nYour perk cards:" << std::endl;
+    for (size_t i = 0; i < perkCards.size(); ++i) {
+        std::cout << i + 1 << ". " << perkCards[i].getName()
+                  << " - " << perkCards[i].getDescription() << std::endl;
+    }
+
+    int cardChoice;
+    std::cout << "Choose card to use (1-" << perkCards.size() << "): ";
+    while (!(std::cin >> cardChoice) || cardChoice < 1 || cardChoice > static_cast<int>(perkCards.size())) {
+        std::cout << "Invalid card choice. Please try again: ";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // ← جلوگیری از باگ ورودی بعدی
+
+    // فعال‌سازی و نمایش
+    std::cout << "Used " << perkCards[cardChoice - 1].getName() << "\n";
+    perkCards[cardChoice - 1].activate(this, hero);
+    hero->removePerkCard(cardChoice - 1);
 }
 
 
