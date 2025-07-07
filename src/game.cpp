@@ -721,117 +721,9 @@ void Game::heroPhase(Hero *hero)
     pickUpItems(hero, actions);
     break;
 
-        case 4:
-        {
-
-            Location *current = hero->getLocation();
-
-            // currnt location to neighbors
-            auto &localVillagers = current->getVillagers();
-
-            if (!localVillagers.empty())
-            {
-                std::cout << "\n:busts_in_silhouette: Villagers in current location:\n";
-                for (size_t i = 0; i < localVillagers.size(); ++i)
-                {
-                    std::cout << i + 1 << ". " << localVillagers[i]->getName()
-                              << " (Destination: " << localVillagers[i]->getDestination()->getName() << ")\n";
-                }
-
-                int villagerChoice;
-                std::cout << "Choose a villager to guide from current location (0 to skip): ";
-                std::cin >> villagerChoice;
-
-                if (villagerChoice >= 1 && villagerChoice <= static_cast<int>(localVillagers.size()))
-                {
-                    Villager *villager = current->removeVillager(villagerChoice - 1);
-
-                    const auto &neighbors = current->getNeighbors();
-                    std::cout << "Choose destination:\n";
-                    for (size_t i = 0; i < neighbors.size(); ++i)
-                    {
-                        std::cout << i + 1 << ". " << neighbors[i]->getName() << '\n';
-                    }
-
-                    int destChoice;
-                    std::cin >> destChoice;
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-                    if (destChoice >= 1 && destChoice <= static_cast<int>(neighbors.size()))
-                    {
-                        Location *dest = neighbors[destChoice - 1];
-                        dest->addVillager(villager);
-                        villager->moveTo(dest);
-
-                        std::cout << ":white_check_mark: Guided " << villager->getName() << " to " << dest->getName() << '\n';
-
-                        if (dest == villager->getDestination())
-                        {
-                            std::cout << ":tada: " << villager->getName() << " has reached their destination!\n";
-                            rewardHeroWithPerk(hero, villager);
-                        }
-
-                        actions--;
-                        break;
-                    }
-                    else
-                    {
-                        std::cout << ":x: Invalid destination.\n";
-                        current->addVillager(villager);
-                        villager->moveTo(current);
-                    }
-                }
-            }
-
-            // neighbors to current location
-            const auto &neighbors = current->getNeighbors();
-            bool movedSomeone = false;
-
-            for (Location *neighbor : neighbors)
-            {
-                auto &neighborVillagers = neighbor->getVillagers();
-                if (!neighborVillagers.empty())
-                {
-                    std::cout << "\n:busts_in_silhouette: Villagers in neighbor location: " << neighbor->getName() << '\n';
-                    for (size_t i = 0; i < neighborVillagers.size(); ++i)
-                    {
-                        std::cout << i + 1 << ". " << neighborVillagers[i]->getName()
-                                  << " (Destination: " << neighborVillagers[i]->getDestination()->getName() << ")\n";
-                    }
-
-                    int villagerChoice;
-                    std::cout << "Choose a villager to move to your location from " << neighbor->getName()
-                              << " (0 to skip): ";
-                    std::cin >> villagerChoice;
-
-                    if (villagerChoice >= 1 && villagerChoice <= static_cast<int>(neighborVillagers.size()))
-                    {
-                        Villager *villager = neighbor->removeVillager(villagerChoice - 1);
-                        current->addVillager(villager);
-                        villager->moveTo(current);
-
-                        std::cout << ":white_check_mark: Moved " << villager->getName() << " to your current location.\n";
-
-                        if (current == villager->getDestination())
-                        {
-                            std::cout << ":tada: " << villager->getName() << " has reached their destination!\n";
-                            rewardHeroWithPerk(hero, villager);
-                        }
-
-                        actions--;
-                        movedSomeone = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!movedSomeone && localVillagers.empty())
-            {
-                std::cout << ":confused: No available villagers to guide.\n";
-            }
-
-            break;
-        }
+    case 4:
+    guideVillager(hero, actions);
+    break;
 
         case 5:
         { // Use a perk card
@@ -1342,6 +1234,98 @@ void Game::pickUpItems(Hero* hero, int& actions) {
 
 
 
+void Game::guideVillager(Hero* hero, int& actions) {
+    Location* current = hero->getLocation();
+
+    auto& localVillagers = current->getVillagers();
+
+    bool didSomething = false;
+
+    // 1. حرکت از current به neighbor
+    if (!localVillagers.empty()) {
+        std::cout << "\n👥 Villagers in current location:\n";
+        for (size_t i = 0; i < localVillagers.size(); ++i) {
+            std::cout << i + 1 << ". " << localVillagers[i]->getName()
+                      << " (Destination: " << localVillagers[i]->getDestination()->getName() << ")\n";
+        }
+
+        int villagerChoice;
+        std::cout << "Choose a villager to guide (0 to skip): ";
+        std::cin >> villagerChoice;
+
+        if (villagerChoice >= 1 && villagerChoice <= static_cast<int>(localVillagers.size())) {
+            Villager* villager = current->removeVillager(villagerChoice - 1);
+
+            const auto& neighbors = current->getNeighbors();
+            std::cout << "Choose destination:\n";
+            for (size_t i = 0; i < neighbors.size(); ++i) {
+                std::cout << i + 1 << ". " << neighbors[i]->getName() << '\n';
+            }
+
+            int destChoice;
+            std::cin >> destChoice;
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+            if (destChoice >= 1 && destChoice <= static_cast<int>(neighbors.size())) {
+                Location* dest = neighbors[destChoice - 1];
+                dest->addVillager(villager);
+                villager->moveTo(dest);
+
+                std::cout << "✅ Guided " << villager->getName() << " to " << dest->getName() << '\n';
+
+                if (dest == villager->getDestination()) {
+                    std::cout << "🎉 " << villager->getName() << " has reached their destination!\n";
+                    rewardHeroWithPerk(hero, villager);
+                }
+
+                actions--;
+                didSomething = true;
+            } else {
+                std::cout << "❌ Invalid destination. Villager returned.\n";
+                current->addVillager(villager);
+                villager->moveTo(current);
+            }
+        }
+    }
+
+    // 2. حرکت از neighbor به current
+    const auto& neighbors = current->getNeighbors();
+    for (Location* neighbor : neighbors) {
+        auto& neighborVillagers = neighbor->getVillagers();
+        if (!neighborVillagers.empty()) {
+            std::cout << "\n👥 Villagers in neighbor: " << neighbor->getName() << '\n';
+            for (size_t i = 0; i < neighborVillagers.size(); ++i) {
+                std::cout << i + 1 << ". " << neighborVillagers[i]->getName()
+                          << " (Destination: " << neighborVillagers[i]->getDestination()->getName() << ")\n";
+            }
+
+            int choice;
+            std::cout << "Choose villager to bring from " << neighbor->getName() << " (0 to skip): ";
+            std::cin >> choice;
+
+            if (choice >= 1 && choice <= static_cast<int>(neighborVillagers.size())) {
+                Villager* villager = neighbor->removeVillager(choice - 1);
+                current->addVillager(villager);
+                villager->moveTo(current);
+
+                std::cout << "✅ Moved " << villager->getName() << " to your location.\n";
+
+                if (current == villager->getDestination()) {
+                    std::cout << "🎉 " << villager->getName() << " has reached their destination!\n";
+                    rewardHeroWithPerk(hero, villager);
+                }
+
+                actions--;
+                didSomething = true;
+                break; // فقط یکی بیاد کافیه
+            }
+        }
+    }
+
+    if (!didSomething && localVillagers.empty()) {
+        std::cout << "😕 No villagers available to guide.\n";
+    }
+}
 
 
 
