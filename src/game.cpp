@@ -708,38 +708,8 @@ void Game::heroPhase(Hero *hero)
         switch (choice)
         {
         case 1:
-        { // Move
-            Location *current = hero->getLocation();
-            const auto &neighbors = current->getNeighbors();
-
-            std::cout << "\nAvailable destinations:" << std::endl;
-            for (size_t i = 0; i < neighbors.size(); ++i)
-            {
-                std::cout << i + 1 << ". " << neighbors[i]->getName() << std::endl;
-            }
-
-            int destChoice;
-            std::cout << "Choose destination (1-" << neighbors.size() << "): ";
-            while (!(std::cin >> destChoice) || destChoice < 1 || destChoice > static_cast<int>(neighbors.size()))
-            {
-                std::cout << "Invalid destination choice. Please try again: ";
-                std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            }
-
-            Location *chosenLocation = neighbors[destChoice - 1];
-            if (false)
-            {
-                std::cout << "You cannot stay in " << chosenLocation->getName() << ". Please choose another action." << std::endl;
-            }
-            else
-            {
-                hero->moveTo(chosenLocation);
-                std::cout << "Moved to " << chosenLocation->getName() << "\n";
-                actions--;
-            }
+            handleMove(hero, actions);
             break;
-        }
 
         case 2:
         { // Show items
@@ -1339,6 +1309,40 @@ Location *Game::getLocationByName(const std::string &name)
 Hero *Game::getCurrentHero()
 {
     return heroes[currentHeroIndex];
+}
+
+void Game::handleMove(Hero *hero, int &actions)
+{
+    Location *current = hero->getLocation();
+    const auto &neighbors = current->getNeighbors();
+
+    std::cout << "\nAvailable destinations:" << std::endl;
+    for (size_t i = 0; i < neighbors.size(); ++i)
+    {
+        std::cout << i + 1 << ". " << neighbors[i]->getName() << std::endl;
+    }
+
+    int destChoice;
+    std::cout << "Choose destination (1-" << neighbors.size() << "): ";
+    while (!(std::cin >> destChoice) || destChoice < 1 || destChoice > static_cast<int>(neighbors.size()))
+    {
+        std::cout << "Invalid destination choice. Please try again: ";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+
+    Location *chosenLocation = neighbors[destChoice - 1];
+
+    if (false)
+    {
+        std::cout << "You cannot stay in " << chosenLocation->getName() << ". Please choose another action." << std::endl;
+    }
+    else
+    {
+        hero->moveTo(chosenLocation);
+        std::cout << "Moved to " << chosenLocation->getName() << "\n";
+        actions--;
+    }
 }
 
 void Game::advanceTask(Hero *hero)
