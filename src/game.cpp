@@ -753,96 +753,11 @@ void Game::heroPhase(Hero *hero)
     break;
 
 
-        case 10:
-        { // Special Action
-            if (hero->getType() == HeroType::Archaeologist)
-            {
-                auto *currentLocation = hero->getLocation();
-                const auto &neighbors = currentLocation->getNeighbors();
-                if (neighbors.empty())
-                {
-                    std::cout << "No adjacent locations to pick items from." << std::endl;
-                    break;
-                }
-                std::cout << "\nAdjacent locations:" << std::endl;
-                for (size_t i = 0; i < neighbors.size(); ++i)
-                {
-                    std::cout << i + 1 << ". " << neighbors[i]->getName() << std::endl;
-                }
-                std::cout << "Choose a location to pick up items from (1-" << neighbors.size() << "): ";
-                int locChoice = 0;
-                while (!(std::cin >> locChoice) || locChoice < 1 || locChoice > static_cast<int>(neighbors.size()))
-                {
-                    std::cout << "Invalid choice. Please choose a valid location (1-" << neighbors.size() << "): ";
-                    std::cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                }
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                Location *chosenLocation = neighbors[locChoice - 1];
-                const auto &locItems = chosenLocation->getItems();
-                if (locItems.empty())
-                {
-                    std::cout << "No items available in this location." << std::endl;
-                }
-                else
-                {
-                    std::cout << "\nAvailable items in " << chosenLocation->getName() << ":" << std::endl;
-                    for (size_t i = 0; i < locItems.size(); ++i)
-                    {
-                        std::cout << i + 1 << ". " << locItems[i].getName()
-                                  << " (Power: " << locItems[i].getPower() << ")" << std::endl;
-                    }
-                    std::cout << "Choose items to take (enter numbers separated by spaces, e.g., '1 3'): ";
-                    std::string lineInput;
-                    std::getline(std::cin >> std::ws, lineInput);
-                    std::stringstream ss(lineInput);
-                    int itemNum;
-                    std::vector<int> chosenIndexes;
-                    while (ss >> itemNum)
-                    {
-                        if (itemNum >= 1 && itemNum <= static_cast<int>(locItems.size()))
-                        {
-                            chosenIndexes.push_back(itemNum - 1);
-                        }
-                        else
-                        {
-                            std::cout << "Invalid item number ignored: " << itemNum << std::endl;
-                        }
-                    }
-                    std::sort(chosenIndexes.begin(), chosenIndexes.end());
-                    chosenIndexes.erase(std::unique(chosenIndexes.begin(), chosenIndexes.end()), chosenIndexes.end());
-                    if (chosenIndexes.empty())
-                    {
-                        std::cout << "No valid items selected." << std::endl;
-                    }
-                    else
-                    {
+    case 10:
+    handleSpecialAction(hero, actions);
+    break;
 
-                        for (int i = chosenIndexes.size() - 1; i >= 0; --i)
-                        {
-                            int indexToRemove = chosenIndexes[i];
-                            if (indexToRemove >= 0 && indexToRemove < (int)chosenLocation->getItems().size())
-                            {
-                                Item picked = chosenLocation->removeItem(indexToRemove);
-                                hero->addItem(picked);
-                                std::cout << "Picked up " << picked.getName() << "\n";
-                            }
-                            else
-                            {
-                                std::cout << "Item index " << (indexToRemove + 1) << " is no longer valid and was skipped.\n";
-                            }
-                        }
-                        actions--;
-                    }
-                }
-            }
-            else
-            {
-                std::cout << "This special action is only available for the Archaeologist.\n";
-            }
-            break;
-        }
-
+    
         default:
             std::cout << "Invalid choice. Please choose 1-10" << std::endl;
             break;
@@ -1141,7 +1056,7 @@ void Game::guideVillager(Hero* hero, int& actions) {
                 actions--;
                 didSomething = true;
             } else {
-                std::cout << "❌ Invalid destination. Villager returned.\n";
+                std::cout << "Invalid destination. Villager returned.\n";
                 current->addVillager(villager);
                 villager->moveTo(current);
             }
@@ -1314,18 +1229,6 @@ void Game::showHelpMenu() {
 }
 
 
-void Game::handleQuit() {
-    std::cout << "Are you sure you want to quit? (y/n): ";
-    char confirm;
-    std::cin >> confirm;
-
-    if (tolower(confirm) == 'y') {
-        std::cout << "Thanks for playing!\n";
-        exit(0);
-    }
-}
-
-
 void Game::advanceTask(Hero *hero)
 {
     Location *current = hero->getLocation();
@@ -1447,6 +1350,119 @@ void Game::defeatMonster(Hero *hero)
 
     std::cout << "No monster to defeat at your location.\n";
 }
+
+
+
+
+
+
+
+
+void Game::handleQuit() {
+    std::cout << "Are you sure you want to quit? (y/n): ";
+    char confirm;
+    std::cin >> confirm;
+
+    if (tolower(confirm) == 'y') {
+        std::cout << "Thanks for playing!\n";
+        exit(0);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+void Game::handleSpecialAction(Hero* hero, int& actions) {
+    if (hero->getType() != HeroType::Archaeologist) {
+        std::cout << "This special action is only available for the Archaeologist.\n";
+        return;
+    }
+
+    auto* currentLocation = hero->getLocation();
+    const auto& neighbors = currentLocation->getNeighbors();
+
+    if (neighbors.empty()) {
+        std::cout << "No adjacent locations to pick items from." << std::endl;
+        return;
+    }
+
+    std::cout << "\nAdjacent locations:" << std::endl;
+    for (size_t i = 0; i < neighbors.size(); ++i) {
+        std::cout << i + 1 << ". " << neighbors[i]->getName() << std::endl;
+    }
+
+    std::cout << "Choose a location to pick up items from (1-" << neighbors.size() << "): ";
+    int locChoice = 0;
+    while (!(std::cin >> locChoice) || locChoice < 1 || locChoice > static_cast<int>(neighbors.size())) {
+        std::cout << "Invalid choice. Please choose a valid location (1-" << neighbors.size() << "): ";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    Location* chosenLocation = neighbors[locChoice - 1];
+    const auto& locItems = chosenLocation->getItems();
+
+    if (locItems.empty()) {
+        std::cout << "No items available in this location." << std::endl;
+        return;
+    }
+
+    std::cout << "\nAvailable items in " << chosenLocation->getName() << ":" << std::endl;
+    for (size_t i = 0; i < locItems.size(); ++i) {
+        std::cout << i + 1 << ". " << locItems[i].getName()
+                  << " (Power: " << locItems[i].getPower() << ")" << std::endl;
+    }
+
+    std::cout << "Choose items to take (enter numbers separated by spaces, e.g., '1 3'): ";
+    std::string lineInput;
+    std::getline(std::cin >> std::ws, lineInput);
+    std::stringstream ss(lineInput);
+    int itemNum;
+    std::vector<int> chosenIndexes;
+
+    while (ss >> itemNum) {
+        if (itemNum >= 1 && itemNum <= static_cast<int>(locItems.size())) {
+            chosenIndexes.push_back(itemNum - 1);
+        } else {
+            std::cout << "Invalid item number ignored: " << itemNum << std::endl;
+        }
+    }
+
+    std::sort(chosenIndexes.begin(), chosenIndexes.end());
+    chosenIndexes.erase(std::unique(chosenIndexes.begin(), chosenIndexes.end()), chosenIndexes.end());
+
+    if (chosenIndexes.empty()) {
+        std::cout << "No valid items selected." << std::endl;
+        return;
+    }
+
+    for (int i = chosenIndexes.size() - 1; i >= 0; --i) {
+        int indexToRemove = chosenIndexes[i];
+        if (indexToRemove >= 0 && indexToRemove < static_cast<int>(chosenLocation->getItems().size())) {
+            Item picked = chosenLocation->removeItem(indexToRemove);
+            hero->addItem(picked);
+            std::cout << "Picked up " << picked.getName() << "\n";
+        } else {
+            std::cout << "Item index " << (indexToRemove + 1) << " is no longer valid and was skipped.\n";
+        }
+    }
+
+    actions--;
+}
+
+
+
+
+
 
 Hero *Game::getHeroAtLocation(Location *loc)
 {
