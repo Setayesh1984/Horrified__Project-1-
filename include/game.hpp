@@ -88,6 +88,23 @@ public:
     void defeatMonster(Hero *hero);
     void advanceTask(Hero *hero);
 
+
+    void handleMove(Hero* hero, int& actions);
+    void showItems(Hero* hero);
+    void pickUpItems(Hero* hero, int& actions);
+    void guideVillager(Hero* hero, int& actions);
+    void usePerkCard(Hero* hero);
+    void showHelpMenu();
+    void handleQuit();
+    void handleSpecialAction(Hero* hero, int& actions);
+
+
+
+
+
+
+
+
     int getTerrorLevel() const { return terrorLevel; }
 
     const std::vector<std::string> &getLastMonsterDiceRolls() const
