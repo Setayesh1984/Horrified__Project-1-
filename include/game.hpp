@@ -91,16 +91,15 @@ public:
 
     void handleMove(Hero* hero, int& actions);
     void showItems(Hero* hero);
-    void pickUpItems(Hero* hero, int& actions);
-    void guideVillager(Hero* hero, int& actions);
-    void usePerkCard(Hero* hero);
-    void showHelpMenu();
-    void handleQuit();
-    void handleSpecialAction(Hero* hero, int& actions);
-
-
-
-
+void pickUpItems(Hero* hero, int& actions);
+void guideVillager(Hero* hero, int& actions);
+void usePerkCard(Hero* hero);
+void showHelpMenu();
+void handleQuit();
+void handleSpecialAction(Hero* hero, int& actions);
+void printHeroTurnHeader(Hero* hero);
+void printHeroActionMenu(int actions);
+void printHelpCommandList();
 
 
 

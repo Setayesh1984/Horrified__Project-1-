@@ -573,6 +573,42 @@ void Game::assignHeroes()
     }
 }
 
+void Game::printHeroTurnHeader(Hero *hero)
+{
+    std::cout << "\n===== " << hero->getPlayerName() << "'s Turn =====\n";
+    std::cout << "\nCurrent Location: " << hero->getLocation()->getName() << std::endl;
+}
+
+void Game::printHeroActionMenu(int actions)
+{
+    std::cout << "\nYou have " << actions << " actions remaining.\n";
+    std::cout << "1. Move to a neighboring location\n";
+    std::cout << "2. Show items in current location\n";
+    std::cout << "3. Take an item\n";
+    std::cout << "4. Guide a villager\n";
+    std::cout << "5. Use a perk card\n";
+    std::cout << "6. Help\n";
+    std::cout << "7. Advance Task\n";
+    std::cout << "8. Defeat Monster\n";
+    std::cout << "9. Quit\n";
+    std::cout << "10. Special Action\n";
+    std::cout << "Please choose 1-10:\n";
+}
+
+void Game::printHelpCommandList()
+{
+    std::cout << "\nAvailable actions:\n";
+    std::cout << " - move\n";
+    std::cout << " - guide\n";
+    std::cout << " - pickup\n";
+    std::cout << " - advance\n";
+    std::cout << " - defeat\n";
+    std::cout << " - perk\n";
+    std::cout << " - help\n";
+    std::cout << " - quit\n";
+    std::cout << " - special\n";
+}
+
 void Game::heroPhase(Hero *hero)
 {
     int actions = 4;
@@ -584,26 +620,13 @@ void Game::heroPhase(Hero *hero)
         std::cout << hero->getPlayerName() << " starts from the hospital in the next turn.\n";
     }
 
-    std::cout << "\n===== " << hero->getPlayerName() << "'s Turn =====\n";
-    std::cout << "\nCurrent Location: " << hero->getLocation()->getName() << std::endl;
+    printHeroTurnHeader(hero);
 
     while (actions > 0)
     {
-        std::cout << "\nYou have " << actions << " actions remaining." << std::endl;
-        std::cout << "1. Move to a neighboring location" << std::endl;
-        std::cout << "2. Show items in current location" << std::endl;
-        std::cout << "3. Take an item" << std::endl;
-        std::cout << "4. Guide a villager" << std::endl;
-        std::cout << "5. Use a perk card" << std::endl;
-        std::cout << "6. help" << std::endl;
-        std::cout << "7. Advance Task" << std::endl;
-        std::cout << "8. Defeat Monster" << std::endl;
-        std::cout << "9. quit" << std::endl;
-        std::cout << "10. Specal Action" << std::endl;
-        std::cout << "please choose 1-10" << std::endl;
+        printHeroActionMenu(actions);
 
         std::string input;
-
         std::cin >> input;
 
         if (input == "quit")
@@ -614,16 +637,7 @@ void Game::heroPhase(Hero *hero)
 
         if (input == "help")
         {
-            std::cout << "\n Available actions:\n";
-            std::cout << " - move\n";
-            std::cout << " - guide\n";
-            std::cout << " - pickup\n";
-            std::cout << " - advance\n";
-            std::cout << " - defeat\n";
-            std::cout << " - perk\n";
-            std::cout << " - help\n";
-            std::cout << " - quit\n";
-            std::cout << " - specail\n";
+            printHelpCommandList();
 
             std::string commandHelp;
             while (true)
@@ -635,49 +649,23 @@ void Game::heroPhase(Hero *hero)
                     break;
 
                 if (commandHelp == "move")
-                {
                     std::cout << "move: Moves the hero to a neighboring location (1 action is subtracted)\n";
-                }
-
                 else if (commandHelp == "guide")
-                {
-                    std::cout << " guide: Leads a villager with him to a neighboring location (if have any villagers)\n";
-                }
-
+                    std::cout << "guide: Leads a villager with him to a neighboring location (if have any villagers)\n";
                 else if (commandHelp == "pickup")
-                {
-                    std::cout << " pickup: Take items from the current location.\n";
-                }
-
+                    std::cout << "pickup: Take items from the current location.\n";
                 else if (commandHelp == "advance")
-                {
-                    std::cout << " advance: Advancing the Monster Mission(Destroy Coffin or Find Evidence)\n";
-                }
-
+                    std::cout << "advance: Advancing the Monster Mission (Destroy Coffin or Find Evidence)\n";
                 else if (commandHelp == "defeat")
-                {
-                    std::cout << " defeat: Final attack on the monster (if the conditions for its defeat are met)\n";
-                }
-
+                    std::cout << "defeat: Final attack on the monster (if the conditions for its defeat are met)\n";
                 else if (commandHelp == "perk")
-                {
-                    std::cout << " perk: Using one of the Perk cards available to you\n";
-                }
-
+                    std::cout << "perk: Using one of the Perk cards available to you\n";
                 else if (commandHelp == "help")
-                {
-                    std::cout << " help: Display a list of actions and descriptions for each.\n";
-                }
-
+                    std::cout << "help: Display a list of actions and descriptions for each.\n";
                 else if (commandHelp == "specail")
-                {
-                    std::cout << "Specail: this option just for Archaeologist \n that mean Take as many items as he want in current location.\n";
-                }
-
+                    std::cout << "special: This option just for Archaeologist - take as many items as they want from adjacent location.\n";
                 else
-                {
-                    std::cout << " Unknown command. Please enter one of the actions or quit.\n";
-                }
+                    std::cout << "Unknown command. Please enter one of the actions or 'quit'.\n";
             }
 
             continue;
@@ -690,19 +678,16 @@ void Game::heroPhase(Hero *hero)
         }
         catch (...)
         {
-            std::cout << "Invalid choice.please choose 1-10\n";
-
+            std::cout << "Invalid choice. Please choose 1-10\n";
             continue;
         }
+
         if (choice < 1 || choice > 10)
         {
-            std::cout << "Invalid choice. Please choose 1-10:   \n ";
+            std::cout << "Invalid choice. Please choose 1-10:\n";
             continue;
-
-            std::cout << "Invalid choice. Please choose 1-10: ";
-            std::cin.clear(); // Clear the error flag
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
+
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         switch (choice)
@@ -710,54 +695,33 @@ void Game::heroPhase(Hero *hero)
         case 1:
             handleMove(hero, actions);
             break;
-
         case 2:
-        { // Show items
-            hero->getLocation()->printItems();
+            showItems(hero);
             break;
-        }
-
         case 3:
-    pickUpItems(hero, actions);
-    break;
-
-    case 4:
-    guideVillager(hero, actions);
-    break;
-
-    case 5:
-    usePerkCard(hero);
-    break;
-
-            
-
-            case 6:
-           { showHelpMenu();
+            pickUpItems(hero, actions);
             break;
-           }
-
+        case 4:
+            guideVillager(hero, actions);
+            break;
+        case 5:
+            usePerkCard(hero);
+            break;
+        case 6:
+            showHelpMenu();
+            break;
         case 7:
-        { // Advance Task
             advanceTask(hero);
             break;
-        }
-
         case 8:
-        { // Defeat Monster
             defeatMonster(hero);
             break;
-        }
-
         case 9:
-    handleQuit();
-    break;
-
-
-    case 10:
-    handleSpecialAction(hero, actions);
-    break;
-
-    
+            handleQuit();
+            break;
+        case 10:
+            handleSpecialAction(hero, actions);
+            break;
         default:
             std::cout << "Invalid choice. Please choose 1-10" << std::endl;
             break;
@@ -957,18 +921,24 @@ void Game::handleMove(Hero *hero, int &actions)
     }
 }
 
+void Game::showItems(Hero *hero)
+{
+    hero->getLocation()->printItems();
+}
 
+void Game::pickUpItems(Hero *hero, int &actions)
+{
+    const auto &locItems = hero->getLocation()->getItems();
 
-void Game::pickUpItems(Hero* hero, int& actions) {
-    const auto& locItems = hero->getLocation()->getItems();
-
-    if (locItems.empty()) {
+    if (locItems.empty())
+    {
         std::cout << "No items available in this location." << std::endl;
         return;
     }
 
     std::cout << "\nAvailable items:" << std::endl;
-    for (size_t i = 0; i < locItems.size(); ++i) {
+    for (size_t i = 0; i < locItems.size(); ++i)
+    {
         std::cout << i + 1 << ". " << locItems[i].getName()
                   << " (Power: " << locItems[i].getPower() << ")" << std::endl;
     }
@@ -981,10 +951,14 @@ void Game::pickUpItems(Hero* hero, int& actions) {
     int itemNum;
     std::vector<int> chosenIndexes;
 
-    while (ss >> itemNum) {
-        if (itemNum >= 1 && itemNum <= static_cast<int>(locItems.size())) {
+    while (ss >> itemNum)
+    {
+        if (itemNum >= 1 && itemNum <= static_cast<int>(locItems.size()))
+        {
             chosenIndexes.push_back(itemNum - 1);
-        } else {
+        }
+        else
+        {
             std::cout << "Invalid item number ignored: " << itemNum << std::endl;
         }
     }
@@ -992,13 +966,15 @@ void Game::pickUpItems(Hero* hero, int& actions) {
     std::sort(chosenIndexes.begin(), chosenIndexes.end());
     chosenIndexes.erase(std::unique(chosenIndexes.begin(), chosenIndexes.end()), chosenIndexes.end());
 
-    if (chosenIndexes.empty()) {
+    if (chosenIndexes.empty())
+    {
         std::cout << "No valid items selected." << std::endl;
         return;
     }
 
     // Pick up items in reverse order to avoid invalidating iterators
-    for (int i = chosenIndexes.size() - 1; i >= 0; --i) {
+    for (int i = chosenIndexes.size() - 1; i >= 0; --i)
+    {
         int indexToRemove = chosenIndexes[i];
         Item picked = hero->getLocation()->removeItem(indexToRemove);
         hero->addItem(picked);
@@ -1007,19 +983,20 @@ void Game::pickUpItems(Hero* hero, int& actions) {
     }
 }
 
+void Game::guideVillager(Hero *hero, int &actions)
+{
+    Location *current = hero->getLocation();
 
-
-void Game::guideVillager(Hero* hero, int& actions) {
-    Location* current = hero->getLocation();
-
-    auto& localVillagers = current->getVillagers();
+    auto &localVillagers = current->getVillagers();
 
     bool didSomething = false;
 
     // 1. حرکت از current به neighbor
-    if (!localVillagers.empty()) {
+    if (!localVillagers.empty())
+    {
         std::cout << "\n👥 Villagers in current location:\n";
-        for (size_t i = 0; i < localVillagers.size(); ++i) {
+        for (size_t i = 0; i < localVillagers.size(); ++i)
+        {
             std::cout << i + 1 << ". " << localVillagers[i]->getName()
                       << " (Destination: " << localVillagers[i]->getDestination()->getName() << ")\n";
         }
@@ -1028,12 +1005,14 @@ void Game::guideVillager(Hero* hero, int& actions) {
         std::cout << "Choose a villager to guide (0 to skip): ";
         std::cin >> villagerChoice;
 
-        if (villagerChoice >= 1 && villagerChoice <= static_cast<int>(localVillagers.size())) {
-            Villager* villager = current->removeVillager(villagerChoice - 1);
+        if (villagerChoice >= 1 && villagerChoice <= static_cast<int>(localVillagers.size()))
+        {
+            Villager *villager = current->removeVillager(villagerChoice - 1);
 
-            const auto& neighbors = current->getNeighbors();
+            const auto &neighbors = current->getNeighbors();
             std::cout << "Choose destination:\n";
-            for (size_t i = 0; i < neighbors.size(); ++i) {
+            for (size_t i = 0; i < neighbors.size(); ++i)
+            {
                 std::cout << i + 1 << ". " << neighbors[i]->getName() << '\n';
             }
 
@@ -1041,21 +1020,25 @@ void Game::guideVillager(Hero* hero, int& actions) {
             std::cin >> destChoice;
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-            if (destChoice >= 1 && destChoice <= static_cast<int>(neighbors.size())) {
-                Location* dest = neighbors[destChoice - 1];
+            if (destChoice >= 1 && destChoice <= static_cast<int>(neighbors.size()))
+            {
+                Location *dest = neighbors[destChoice - 1];
                 dest->addVillager(villager);
                 villager->moveTo(dest);
 
                 std::cout << "✅ Guided " << villager->getName() << " to " << dest->getName() << '\n';
 
-                if (dest == villager->getDestination()) {
+                if (dest == villager->getDestination())
+                {
                     std::cout << "🎉 " << villager->getName() << " has reached their destination!\n";
                     rewardHeroWithPerk(hero, villager);
                 }
 
                 actions--;
                 didSomething = true;
-            } else {
+            }
+            else
+            {
                 std::cout << "Invalid destination. Villager returned.\n";
                 current->addVillager(villager);
                 villager->moveTo(current);
@@ -1064,12 +1047,15 @@ void Game::guideVillager(Hero* hero, int& actions) {
     }
 
     // 2. حرکت از neighbor به current
-    const auto& neighbors = current->getNeighbors();
-    for (Location* neighbor : neighbors) {
-        auto& neighborVillagers = neighbor->getVillagers();
-        if (!neighborVillagers.empty()) {
+    const auto &neighbors = current->getNeighbors();
+    for (Location *neighbor : neighbors)
+    {
+        auto &neighborVillagers = neighbor->getVillagers();
+        if (!neighborVillagers.empty())
+        {
             std::cout << "\n👥 Villagers in neighbor: " << neighbor->getName() << '\n';
-            for (size_t i = 0; i < neighborVillagers.size(); ++i) {
+            for (size_t i = 0; i < neighborVillagers.size(); ++i)
+            {
                 std::cout << i + 1 << ". " << neighborVillagers[i]->getName()
                           << " (Destination: " << neighborVillagers[i]->getDestination()->getName() << ")\n";
             }
@@ -1078,14 +1064,16 @@ void Game::guideVillager(Hero* hero, int& actions) {
             std::cout << "Choose villager to bring from " << neighbor->getName() << " (0 to skip): ";
             std::cin >> choice;
 
-            if (choice >= 1 && choice <= static_cast<int>(neighborVillagers.size())) {
-                Villager* villager = neighbor->removeVillager(choice - 1);
+            if (choice >= 1 && choice <= static_cast<int>(neighborVillagers.size()))
+            {
+                Villager *villager = neighbor->removeVillager(choice - 1);
                 current->addVillager(villager);
                 villager->moveTo(current);
 
                 std::cout << "✅ Moved " << villager->getName() << " to your location.\n";
 
-                if (current == villager->getDestination()) {
+                if (current == villager->getDestination())
+                {
                     std::cout << "🎉 " << villager->getName() << " has reached their destination!\n";
                     rewardHeroWithPerk(hero, villager);
                 }
@@ -1097,29 +1085,33 @@ void Game::guideVillager(Hero* hero, int& actions) {
         }
     }
 
-    if (!didSomething && localVillagers.empty()) {
+    if (!didSomething && localVillagers.empty())
+    {
         std::cout << "😕 No villagers available to guide.\n";
     }
 }
 
+void Game::usePerkCard(Hero *hero)
+{
+    auto &perkCards = hero->getPerkCards();
 
-void Game::usePerkCard(Hero* hero) {
-    auto& perkCards = hero->getPerkCards();
-
-    if (perkCards.empty()) {
+    if (perkCards.empty())
+    {
         std::cout << "You have no perk cards!" << std::endl;
         return;
     }
 
     std::cout << "\nYour perk cards:" << std::endl;
-    for (size_t i = 0; i < perkCards.size(); ++i) {
+    for (size_t i = 0; i < perkCards.size(); ++i)
+    {
         std::cout << i + 1 << ". " << perkCards[i].getName()
                   << " - " << perkCards[i].getDescription() << std::endl;
     }
 
     int cardChoice;
     std::cout << "Choose card to use (1-" << perkCards.size() << "): ";
-    while (!(std::cin >> cardChoice) || cardChoice < 1 || cardChoice > static_cast<int>(perkCards.size())) {
+    while (!(std::cin >> cardChoice) || cardChoice < 1 || cardChoice > static_cast<int>(perkCards.size()))
+    {
         std::cout << "Invalid card choice. Please try again: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -1133,101 +1125,102 @@ void Game::usePerkCard(Hero* hero) {
     hero->removePerkCard(cardChoice - 1);
 }
 
-
-void Game::showHelpMenu() {
+void Game::showHelpMenu()
+{
     std::cout << "\n=== INTERACTIVE HELP MENU ===\n";
     std::cout << "Available actions: 1-10\n";
     std::cout << "Enter a number (1-10) to see detailed explanation, or 0 to return to game:\n";
 
     int helpChoice;
-    while (true) {
+    while (true)
+    {
         std::cout << "Enter choice (0-10): ";
         std::cin >> helpChoice;
 
         if (helpChoice == 0)
             break;
 
-        switch (helpChoice) {
-            case 1:
-                std::cout << "\n=== MOVE ACTION ===\n";
-                std::cout << "Cost: 1 action\n";
-                std::cout << "Description: Move your hero to an adjacent location on the map.\n";
-                std::cout << "Usage: You can move to any location connected by a line on the map.\n";
-                std::cout << "Strategy: Use this to explore the map, reach items, or escape monsters.\n";
-                break;
-            case 2:
-                std::cout << "\n=== SHOW ITEMS ===\n";
-                std::cout << "Cost: 0 actions (free)\n";
-                std::cout << "Description: Display all items available in your current location.\n";
-                std::cout << "Usage: Shows item names and their power levels.\n";
-                std::cout << "Strategy: Always check what items are available before taking them.\n";
-                break;
-            case 3:
-                std::cout << "\n=== TAKE ITEM ===\n";
-                std::cout << "Cost: 1 action\n";
-                std::cout << "Description: Pick up one or more items from your current location.\n";
-                std::cout << "Usage: Select items by number to add them to your inventory.\n";
-                std::cout << "Strategy: Collect items needed for defeating monsters or advancing tasks.\n";
-                break;
-            case 4:
-                std::cout << "\n=== GUIDE VILLAGER ===\n";
-                std::cout << "Cost: 1 action\n";
-                std::cout << "Description: Guide a villager to safety or move them between locations.\n";
-                std::cout << "Usage: Help villagers reach their destination to earn perk cards.\n";
-                std::cout << "Strategy: Rescuing villagers provides valuable perk cards for later use.\n";
-                break;
-            case 5:
-                std::cout << "\n=== USE PERK CARD ===\n";
-                std::cout << "Cost: 1 action\n";
-                std::cout << "Description: Use one of your perk cards for special abilities.\n";
-                std::cout << "Usage: Select a perk card from your inventory to activate it.\n";
-                std::cout << "Strategy: Perk cards can provide powerful advantages - use them wisely.\n";
-                break;
-            case 6:
-                std::cout << "\n=== HELP ===\n";
-                std::cout << "Cost: 0 actions (free)\n";
-                std::cout << "Description: Show this interactive help menu.\n";
-                std::cout << "Usage: Get detailed explanations of all game mechanics.\n";
-                std::cout << "Strategy: Use this whenever you need to understand the game.\n";
-                break;
-            case 7:
-                std::cout << "\n=== ADVANCE TASK ===\n";
-                std::cout << "Cost: 1 action\n";
-                std::cout << "Description: Progress in defeating monsters by destroying coffins or dropping evidence.\n";
-                std::cout << "Usage: For Dracula - destroy coffins with appropriate items.\n";
-                std::cout << "       For Invisible Man - drop evidence at the Precinct.\n";
-                std::cout << "Strategy: This is essential for winning the game.\n";
-                break;
-            case 8:
-                std::cout << "\n=== DEFEAT MONSTER ===\n";
-                std::cout << "Cost: 1 action\n";
-                std::cout << "Description: Attempt to defeat a monster at your location.\n";
-                std::cout << "Usage: Roll dice and meet conditions to defeat monsters.\n";
-                std::cout << "Strategy: Only attempt when you have the right items and conditions.\n";
-                break;
-            case 9:
-                std::cout << "\n=== QUIT ===\n";
-                std::cout << "Cost: 0 actions (free)\n";
-                std::cout << "Description: Exit the game.\n";
-                std::cout << "Usage: Confirm your choice to quit the game.\n";
-                std::cout << "Strategy: Use this when you want to end your current game session.\n";
-                break;
-            case 10:
-                std::cout << "\n=== SPECIAL ACTION ===\n";
-                std::cout << "Cost: 1 action\n";
-                std::cout << "Description: Archaeologist special ability - take all items from current location.\n";
-                std::cout << "Usage: Only available to Archaeologist character type.\n";
-                std::cout << "Strategy: Very powerful for collecting multiple items efficiently.\n";
-                break;
-            default:
-                std::cout << "Invalid choice. Please enter 0-10.\n";
-                break;
+        switch (helpChoice)
+        {
+        case 1:
+            std::cout << "\n=== MOVE ACTION ===\n";
+            std::cout << "Cost: 1 action\n";
+            std::cout << "Description: Move your hero to an adjacent location on the map.\n";
+            std::cout << "Usage: You can move to any location connected by a line on the map.\n";
+            std::cout << "Strategy: Use this to explore the map, reach items, or escape monsters.\n";
+            break;
+        case 2:
+            std::cout << "\n=== SHOW ITEMS ===\n";
+            std::cout << "Cost: 0 actions (free)\n";
+            std::cout << "Description: Display all items available in your current location.\n";
+            std::cout << "Usage: Shows item names and their power levels.\n";
+            std::cout << "Strategy: Always check what items are available before taking them.\n";
+            break;
+        case 3:
+            std::cout << "\n=== TAKE ITEM ===\n";
+            std::cout << "Cost: 1 action\n";
+            std::cout << "Description: Pick up one or more items from your current location.\n";
+            std::cout << "Usage: Select items by number to add them to your inventory.\n";
+            std::cout << "Strategy: Collect items needed for defeating monsters or advancing tasks.\n";
+            break;
+        case 4:
+            std::cout << "\n=== GUIDE VILLAGER ===\n";
+            std::cout << "Cost: 1 action\n";
+            std::cout << "Description: Guide a villager to safety or move them between locations.\n";
+            std::cout << "Usage: Help villagers reach their destination to earn perk cards.\n";
+            std::cout << "Strategy: Rescuing villagers provides valuable perk cards for later use.\n";
+            break;
+        case 5:
+            std::cout << "\n=== USE PERK CARD ===\n";
+            std::cout << "Cost: 1 action\n";
+            std::cout << "Description: Use one of your perk cards for special abilities.\n";
+            std::cout << "Usage: Select a perk card from your inventory to activate it.\n";
+            std::cout << "Strategy: Perk cards can provide powerful advantages - use them wisely.\n";
+            break;
+        case 6:
+            std::cout << "\n=== HELP ===\n";
+            std::cout << "Cost: 0 actions (free)\n";
+            std::cout << "Description: Show this interactive help menu.\n";
+            std::cout << "Usage: Get detailed explanations of all game mechanics.\n";
+            std::cout << "Strategy: Use this whenever you need to understand the game.\n";
+            break;
+        case 7:
+            std::cout << "\n=== ADVANCE TASK ===\n";
+            std::cout << "Cost: 1 action\n";
+            std::cout << "Description: Progress in defeating monsters by destroying coffins or dropping evidence.\n";
+            std::cout << "Usage: For Dracula - destroy coffins with appropriate items.\n";
+            std::cout << "       For Invisible Man - drop evidence at the Precinct.\n";
+            std::cout << "Strategy: This is essential for winning the game.\n";
+            break;
+        case 8:
+            std::cout << "\n=== DEFEAT MONSTER ===\n";
+            std::cout << "Cost: 1 action\n";
+            std::cout << "Description: Attempt to defeat a monster at your location.\n";
+            std::cout << "Usage: Roll dice and meet conditions to defeat monsters.\n";
+            std::cout << "Strategy: Only attempt when you have the right items and conditions.\n";
+            break;
+        case 9:
+            std::cout << "\n=== QUIT ===\n";
+            std::cout << "Cost: 0 actions (free)\n";
+            std::cout << "Description: Exit the game.\n";
+            std::cout << "Usage: Confirm your choice to quit the game.\n";
+            std::cout << "Strategy: Use this when you want to end your current game session.\n";
+            break;
+        case 10:
+            std::cout << "\n=== SPECIAL ACTION ===\n";
+            std::cout << "Cost: 1 action\n";
+            std::cout << "Description: Archaeologist special ability - take all items from current location.\n";
+            std::cout << "Usage: Only available to Archaeologist character type.\n";
+            std::cout << "Strategy: Very powerful for collecting multiple items efficiently.\n";
+            break;
+        default:
+            std::cout << "Invalid choice. Please enter 0-10.\n";
+            break;
         }
 
         std::cout << "\n"; // جداکننده بین توضیحات
     }
 }
-
 
 void Game::advanceTask(Hero *hero)
 {
@@ -1351,73 +1344,64 @@ void Game::defeatMonster(Hero *hero)
     std::cout << "No monster to defeat at your location.\n";
 }
 
-
-
-
-
-
-
-
-void Game::handleQuit() {
+void Game::handleQuit()
+{
     std::cout << "Are you sure you want to quit? (y/n): ";
     char confirm;
     std::cin >> confirm;
 
-    if (tolower(confirm) == 'y') {
+    if (tolower(confirm) == 'y')
+    {
         std::cout << "Thanks for playing!\n";
         exit(0);
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-void Game::handleSpecialAction(Hero* hero, int& actions) {
-    if (hero->getType() != HeroType::Archaeologist) {
+void Game::handleSpecialAction(Hero *hero, int &actions)
+{
+    if (hero->getType() != HeroType::Archaeologist)
+    {
         std::cout << "This special action is only available for the Archaeologist.\n";
         return;
     }
 
-    auto* currentLocation = hero->getLocation();
-    const auto& neighbors = currentLocation->getNeighbors();
+    auto *currentLocation = hero->getLocation();
+    const auto &neighbors = currentLocation->getNeighbors();
 
-    if (neighbors.empty()) {
+    if (neighbors.empty())
+    {
         std::cout << "No adjacent locations to pick items from." << std::endl;
         return;
     }
 
     std::cout << "\nAdjacent locations:" << std::endl;
-    for (size_t i = 0; i < neighbors.size(); ++i) {
+    for (size_t i = 0; i < neighbors.size(); ++i)
+    {
         std::cout << i + 1 << ". " << neighbors[i]->getName() << std::endl;
     }
 
     std::cout << "Choose a location to pick up items from (1-" << neighbors.size() << "): ";
     int locChoice = 0;
-    while (!(std::cin >> locChoice) || locChoice < 1 || locChoice > static_cast<int>(neighbors.size())) {
+    while (!(std::cin >> locChoice) || locChoice < 1 || locChoice > static_cast<int>(neighbors.size()))
+    {
         std::cout << "Invalid choice. Please choose a valid location (1-" << neighbors.size() << "): ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-    Location* chosenLocation = neighbors[locChoice - 1];
-    const auto& locItems = chosenLocation->getItems();
+    Location *chosenLocation = neighbors[locChoice - 1];
+    const auto &locItems = chosenLocation->getItems();
 
-    if (locItems.empty()) {
+    if (locItems.empty())
+    {
         std::cout << "No items available in this location." << std::endl;
         return;
     }
 
     std::cout << "\nAvailable items in " << chosenLocation->getName() << ":" << std::endl;
-    for (size_t i = 0; i < locItems.size(); ++i) {
+    for (size_t i = 0; i < locItems.size(); ++i)
+    {
         std::cout << i + 1 << ". " << locItems[i].getName()
                   << " (Power: " << locItems[i].getPower() << ")" << std::endl;
     }
@@ -1429,10 +1413,14 @@ void Game::handleSpecialAction(Hero* hero, int& actions) {
     int itemNum;
     std::vector<int> chosenIndexes;
 
-    while (ss >> itemNum) {
-        if (itemNum >= 1 && itemNum <= static_cast<int>(locItems.size())) {
+    while (ss >> itemNum)
+    {
+        if (itemNum >= 1 && itemNum <= static_cast<int>(locItems.size()))
+        {
             chosenIndexes.push_back(itemNum - 1);
-        } else {
+        }
+        else
+        {
             std::cout << "Invalid item number ignored: " << itemNum << std::endl;
         }
     }
@@ -1440,29 +1428,29 @@ void Game::handleSpecialAction(Hero* hero, int& actions) {
     std::sort(chosenIndexes.begin(), chosenIndexes.end());
     chosenIndexes.erase(std::unique(chosenIndexes.begin(), chosenIndexes.end()), chosenIndexes.end());
 
-    if (chosenIndexes.empty()) {
+    if (chosenIndexes.empty())
+    {
         std::cout << "No valid items selected." << std::endl;
         return;
     }
 
-    for (int i = chosenIndexes.size() - 1; i >= 0; --i) {
+    for (int i = chosenIndexes.size() - 1; i >= 0; --i)
+    {
         int indexToRemove = chosenIndexes[i];
-        if (indexToRemove >= 0 && indexToRemove < static_cast<int>(chosenLocation->getItems().size())) {
+        if (indexToRemove >= 0 && indexToRemove < static_cast<int>(chosenLocation->getItems().size()))
+        {
             Item picked = chosenLocation->removeItem(indexToRemove);
             hero->addItem(picked);
             std::cout << "Picked up " << picked.getName() << "\n";
-        } else {
+        }
+        else
+        {
             std::cout << "Item index " << (indexToRemove + 1) << " is no longer valid and was skipped.\n";
         }
     }
 
     actions--;
 }
-
-
-
-
-
 
 Hero *Game::getHeroAtLocation(Location *loc)
 {
